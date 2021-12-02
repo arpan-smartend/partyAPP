@@ -1,11 +1,19 @@
 import React, { useLayoutEffect, useCallback, useState, useEffect } from 'react'
-import { View, Vibration, StyleSheet, Alert, Text, Image } from 'react-native'
+import {
+	View,
+	Vibration,
+	StyleSheet,
+	Alert,
+	Text,
+	Image,
+	ImageBackground
+} from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import Button from '../components/UI/Button'
 import { BarCodeScanner } from 'expo-barcode-scanner'
 import Modal from '../components/UI/Modal'
 import { useDispatch, useSelector } from 'react-redux'
-import { validateCoupon } from '../store/CouponSlice'
+import { validateCoupon, resetState } from '../store/CouponSlice'
 
 const HomeScreen = ({ navigation }) => {
 	const dispatch = useDispatch()
@@ -14,6 +22,7 @@ const HomeScreen = ({ navigation }) => {
 	)
 	const [modalVisible, setModalVisible] = useState(false)
 	const [hasPermission, setHasPermission] = useState(null)
+	const [headerTitle, setHeaderTitle] = useState('Welcome, Ready for a drink!')
 
 	const scanHandler = useCallback(async () => {
 		Vibration.vibrate(300)
@@ -23,13 +32,13 @@ const HomeScreen = ({ navigation }) => {
 
 	useLayoutEffect(() => {
 		navigation.setOptions({
-			headerTitle: 'Welcome Arpan Kumar Nandi', //fetch from state
+			headerTitle,
 			headerRight: () => (
 				<Button icon onPress={scanHandler}>
 					<MaterialCommunityIcons
 						name='barcode-scan'
-						size={28}
-						color='#234e9b'
+						size={32}
+						color='#ffa8a8'
 					/>
 				</Button>
 			)
@@ -50,6 +59,22 @@ const HomeScreen = ({ navigation }) => {
 				]
 			)
 	}, [hasPermission])
+
+	useEffect(() => {
+		let timeOut
+		if (Object.keys(couponData).length) {
+			timeOut = setTimeout(() => dispatch(resetState()), 5000)
+			if (!couponData.active) {
+				setHeaderTitle('Oops!!!')
+			} else {
+				setHeaderTitle('Yayy!!!!!')
+			}
+		}
+		return () => {
+			clearTimeout(timeOut)
+			setHeaderTitle('Welcome, Ready for a drink!')
+		}
+	}, [couponData])
 
 	const handleBarCodeScanned = ({ data }) => {
 		try {
@@ -73,22 +98,36 @@ const HomeScreen = ({ navigation }) => {
 	}, [setModalVisible])
 
 	const displayScannedResult = () => {
-		console.log(couponData)
 		if (!Object.keys(couponData).length) {
-			return <Text>Pls Scan a QR code</Text>
+			return (
+				<ImageBackground
+					source={require('../../assets/grab_drink_2.jpg')}
+					style={styles.imageStyle}
+				>
+					<Text style={styles.text}>Scan to grab your drink</Text>
+				</ImageBackground>
+			)
 		} else {
 			if (!couponData.active) {
 				return (
-					<View>
-						<Image source={require('../../assets/giphy_sad.gif')} />
-						<Text>{couponData?.usedAt}</Text>
-					</View>
+					<ImageBackground
+						source={require('../../assets/giphy_sad.gif')}
+						style={styles.imageStyle}
+					>
+						<Text style={styles.text}>
+							{' '}
+							Coupon used at: {couponData?.userAt}
+						</Text>
+					</ImageBackground>
 				)
 			}
 			return (
-				<View>
-					<Image source={require('../../assets/giphy.gif')} />
-				</View>
+				<ImageBackground
+					source={require('../../assets/giphy.gif')}
+					style={styles.imageStyle}
+				>
+					<Text style={styles.text}>Enjoy!!</Text>
+				</ImageBackground>
 			)
 		}
 	}
@@ -111,7 +150,22 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#fff'
+		padding: 20,
+		backgroundColor: '#ffa8a8',
+		position: 'relative'
+	},
+	imageStyle: {
+		flex: 1,
+		borderRadius: 20,
+		justifyContent: 'center'
+	},
+	text: {
+		color: 'white',
+		fontSize: 42,
+		lineHeight: 84,
+		fontWeight: 'bold',
+		textAlign: 'center',
+		backgroundColor: '#000000c0'
 	}
 })
 

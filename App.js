@@ -1,20 +1,53 @@
 import React from 'react'
-import { StyleSheet, Platform } from 'react-native'
+import { StyleSheet, Image } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { createStackNavigator } from '@react-navigation/stack'
 import HomeScreen from './src/screens/HomeScreen'
 import AccountScreen from './src/screens/AccountScreen'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Provider } from 'react-redux'
 import store from './src/store/index'
 
-const { Navigator: TabNavigator, Screen: TabScreen } =
-	createBottomTabNavigator()
+// const { Navigator: TabNavigator, Screen: TabScreen } =
+// 	createBottomTabNavigator()
+
+const { Navigator: StackNavigator, Screen: StackScreen } =
+	createStackNavigator()
 
 const AppContainer = () => {
 	return (
 		<NavigationContainer style={styles.container}>
-			<TabNavigator
+			<StackNavigator
+				initialRouteName='Home'
+				screenOptions={{
+					headerBackground: () => (
+						<Image
+							style={styles.headerBackgroundImage}
+							source={require('./assets/headerBgd.jpg')}
+						/>
+					),
+					headerStyle: {
+						height: 120
+					},
+					headerTintColor: '#fff',
+					headerTitleStyle: {
+						fontSize: 25
+					},
+					headerTitleContainerStyle: {
+						position: 'absolute',
+						alignSelf: 'center'
+					},
+					headerRightContainerStyle: {
+						position: 'absolute',
+						alignSelf: 'center',
+						right: 20
+					}
+				}}
+			>
+				<StackScreen name='Home' component={HomeScreen} />
+			</StackNavigator>
+			{/* <TabNavigator
 				initialRouteName='Home'
 				screenOptions={({ route: { name } }) => ({
 					tabBarIcon: ({ focused, color, size }) => {
@@ -56,7 +89,7 @@ const AppContainer = () => {
 			>
 				<TabScreen name='Home' component={HomeScreen} />
 				<TabScreen name='Account' component={AccountScreen} />
-			</TabNavigator>
+			</TabNavigator> */}
 		</NavigationContainer>
 	)
 }
@@ -67,6 +100,10 @@ const styles = StyleSheet.create({
 		backgroundColor: '#fff',
 		alignItems: 'center',
 		justifyContent: 'center'
+	},
+	headerBackgroundImage: {
+		height: 120,
+		width: '100%'
 	}
 })
 

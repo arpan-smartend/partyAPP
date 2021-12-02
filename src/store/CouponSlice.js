@@ -25,6 +25,15 @@ const couponSlice = createSlice({
 		error: false,
 		errorMessage: ''
 	},
+	reducers: {
+		resetState(state) {
+			state.loading = false
+			state.success = false
+			state.couponData = {}
+			state.error = false
+			state.errorMessage = ''
+		}
+	},
 	extraReducers: (builder) => {
 		builder
 			.addCase(validateCoupon.pending, (state) => {
@@ -47,5 +56,5 @@ const couponSlice = createSlice({
 			})
 	}
 })
-
+export const { resetState } = couponSlice.actions
 export default couponSlice.reducer
