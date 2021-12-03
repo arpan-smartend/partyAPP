@@ -22,7 +22,7 @@ const HomeScreen = ({ navigation }) => {
 	)
 	const [modalVisible, setModalVisible] = useState(false)
 	const [hasPermission, setHasPermission] = useState(null)
-	const [headerTitle, setHeaderTitle] = useState('Welcome, Ready for a drink!')
+	const [headerTitle, setHeaderTitle] = useState('Welcome, Scan to drink!')
 
 	const scanHandler = useCallback(async () => {
 		Vibration.vibrate(300)
@@ -63,16 +63,16 @@ const HomeScreen = ({ navigation }) => {
 	useEffect(() => {
 		let timeOut
 		if (Object.keys(couponData).length) {
-			timeOut = setTimeout(() => dispatch(resetState()), 5000)
+			timeOut = setTimeout(() => dispatch(resetState()), 30000)
 			if (!couponData.active) {
-				setHeaderTitle('Oops!!!')
+				setHeaderTitle('Oops 😓!!!')
 			} else {
-				setHeaderTitle('Yayy!!!!!')
+				setHeaderTitle('Yayy 🙌!!!!!')
 			}
 		}
 		return () => {
 			clearTimeout(timeOut)
-			setHeaderTitle('Welcome, Ready for a drink!')
+			setHeaderTitle('Welcome, Scan to drink!')
 		}
 	}, [couponData])
 
@@ -83,7 +83,7 @@ const HomeScreen = ({ navigation }) => {
 			setModalVisible(false)
 		} catch (e) {
 			setModalVisible(false)
-			Alert.alert('Invalid QR', 'Scan a valid QR', [
+			Alert.alert('Invalid QR Code', 'Scan a valid QR', [
 				{
 					text: 'Ok',
 					onPress: () => {},
@@ -104,7 +104,7 @@ const HomeScreen = ({ navigation }) => {
 					source={require('../../assets/grab_drink_2.jpg')}
 					style={styles.imageStyle}
 				>
-					<Text style={styles.text}>Scan to grab your drink</Text>
+					<Text style={styles.text}>Scan to grab your drink 🍹</Text>
 				</ImageBackground>
 			)
 		} else {
@@ -116,7 +116,7 @@ const HomeScreen = ({ navigation }) => {
 					>
 						<Text style={styles.text}>
 							{' '}
-							Coupon used at: {couponData?.userAt}
+							Drink served 😓: {couponData?.userAt}
 						</Text>
 					</ImageBackground>
 				)
@@ -126,7 +126,7 @@ const HomeScreen = ({ navigation }) => {
 					source={require('../../assets/giphy.gif')}
 					style={styles.imageStyle}
 				>
-					<Text style={styles.text}>Enjoy!!</Text>
+					<Text style={styles.text}>Enjoy your drink 🍹!!</Text>
 				</ImageBackground>
 			)
 		}
